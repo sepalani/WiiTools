@@ -1,4 +1,4 @@
-#include "common.hpp"
+#include "common.hh"
 
 void ascii( u8 character )
 {

@@ -1,4 +1,4 @@
-#include "wii.hpp"
+#include "wii.hh"
 
 bool in_mem1( u32 value )
 {

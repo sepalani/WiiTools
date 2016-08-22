@@ -1,4 +1,4 @@
-#include "endian.hpp"
+#include "endian.hh"
 
 u16 Big16( char * pointer )
 {

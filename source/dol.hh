@@ -3,8 +3,8 @@
 
 #include <string.h>
 
-#include "types.hpp"
-#include "endian.hpp"
+#include "types.hh"
+#include "endian.hh"
 
 typedef struct
 {

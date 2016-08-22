@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "types.hpp"
+#include "types.hh"
 
 #define VERSION_MAJOR 1
 #define VERSION_MINOR 0

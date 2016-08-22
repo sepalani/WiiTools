@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 
-#include "types.hpp"
+#include "types.hh"
 
 /* CRAP ADDED TO BE WEEDED OUT */
 #include <iostream>

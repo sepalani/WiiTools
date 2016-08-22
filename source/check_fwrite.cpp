@@ -14,11 +14,11 @@
 //#define QUITME 1
 //#define FUNCTION_NAME_LIMIT 20
 
-#include "types.hpp"
-#include "endian.hpp"
-#include "dol.hpp"
-#include "functions.hpp"
-#include "wii.hpp"
+#include "types.hh"
+#include "endian.hh"
+#include "dol.hh"
+#include "functions.hh"
+#include "wii.hh"
 
 using namespace std;
 

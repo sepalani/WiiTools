@@ -142,12 +142,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\common.hpp" />
-    <ClInclude Include="..\source\dol.hpp" />
-    <ClInclude Include="..\source\endian.hpp" />
-    <ClInclude Include="..\source\functions.hpp" />
-    <ClInclude Include="..\source\types.hpp" />
-    <ClInclude Include="..\source\wii.hpp" />
+    <ClInclude Include="..\source\common.hh" />
+    <ClInclude Include="..\source\dol.hh" />
+    <ClInclude Include="..\source\endian.hh" />
+    <ClInclude Include="..\source\functions.hh" />
+    <ClInclude Include="..\source\types.hh" />
+    <ClInclude Include="..\source\wii.hh" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\check_fwrite.cpp" />

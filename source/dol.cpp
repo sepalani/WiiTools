@@ -1,4 +1,4 @@
-#include "dol.hpp"
+#include "dol.hh"
 
 void FixDolHeaderEndian(dolheader * header)
 {

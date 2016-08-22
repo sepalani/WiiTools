@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "types.hpp"
-#include "endian.hpp"
-#include "common.hpp"
-#include "functions.hpp"
+#include "types.hh"
+#include "endian.hh"
+#include "common.hh"
+#include "functions.hh"
 
 char * FindOSReport(char* buffer, u32 length)
 {

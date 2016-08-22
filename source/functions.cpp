@@ -1,4 +1,4 @@
-#include "functions.hpp"
+#include "functions.hh"
 
 vector<u32> GetU32Vector( string code )
 {

@@ -6,10 +6,10 @@
 #include <iostream>
 #include <string.h>
 
-#include "types.hpp"
-#include "endian.hpp"
-#include "common.hpp"
-#include "dol.hpp"
+#include "types.hh"
+#include "endian.hh"
+#include "common.hh"
+#include "dol.hh"
 
 using namespace std;
 

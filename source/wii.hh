@@ -2,8 +2,8 @@
 #define __WII_H
 
 #include <string>
-#include "types.hpp"
-#include "endian.hpp"
+#include "types.hh"
+#include "endian.hh"
 
 bool in_mem1( u32 value );
 bool in_mem2( u32 value );

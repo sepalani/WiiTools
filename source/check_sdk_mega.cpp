@@ -5,10 +5,10 @@
 #include <cstdlib>
 #include <fstream>
 
-#include "types.hpp"
-#include "endian.hpp"
-#include "dol.hpp"
-#include "functions.hpp"
+#include "types.hh"
+#include "endian.hh"
+#include "dol.hh"
+#include "functions.hh"
 
 using namespace std;
 

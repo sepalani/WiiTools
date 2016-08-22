@@ -1,7 +1,7 @@
 #ifndef __ENDIAN_H
 #define __ENDIAN_H
 
-#include "types.hpp"
+#include "types.hh"
 
 #define be16(x)        ((x>>8)|(x<<8))
 #define be32(x)        ((x>>24)|((x<<8)&0x00FF0000)|((x>>8)&0x0000FF00)|(x<<24))

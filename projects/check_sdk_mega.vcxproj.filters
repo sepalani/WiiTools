@@ -11,22 +11,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\common.hpp">
+    <ClInclude Include="..\source\common.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\dol.hpp">
+    <ClInclude Include="..\source\dol.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\endian.hpp">
+    <ClInclude Include="..\source\endian.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\functions.hpp">
+    <ClInclude Include="..\source\functions.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\types.hpp">
+    <ClInclude Include="..\source\types.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\wii.hpp">
+    <ClInclude Include="..\source\wii.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

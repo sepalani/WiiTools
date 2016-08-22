@@ -5,6 +5,7 @@ Thumbs.db
 .DS_Store
 
 # Ignore files output by build
+[Bb]uild/
 [Dd]ebug/
 [Rr]elease/
 x64/
