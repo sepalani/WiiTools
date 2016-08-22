@@ -144,10 +144,8 @@
   <ItemGroup>
     <ClCompile Include="..\source\common.cpp" />
     <ClCompile Include="..\source\dol.cpp" />
-    <ClCompile Include="..\source\endian.cpp" />
     <ClCompile Include="..\source\functions.cpp" />
     <ClCompile Include="..\source\mega_info_creator.cpp" />
-    <ClCompile Include="..\source\wii.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\common.hh" />

@@ -1,73 +1,81 @@
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
 #include "common.hh"
 
-void ascii( u8 character )
+void ascii(u8 character)
 {
-	printf("%c", (character<0x1e || character>0x7f) ? '.' : character);
+	std::cout << (char)(
+		(character < 0x1e ||character > 0x7f) ? '.' : character
+	);
 }
 
-void hexdump( char * pointer , u32 length )
+void hexdump(void* pointer, u32 length)
 {
-	u32 go_to = 0;
 #ifdef SHORT_DUMP
-	go_to = 10;
+	u32 go_to = 10;
 #else
-	go_to = (length + 0xF) >> 4;
+	u32 go_to = (length + 0xF) >> 4;
 #endif
 
 #ifdef SAFETY
-	if ( go_to > 16 )
+	if (go_to > 16)
 		go_to = 16;
 #endif
 
-	u8 * temp1 = NULL;
-	u8 * temp2 = NULL;
-	temp1 = (u8*)pointer;
-	temp2 = (u8*)pointer;
-	for ( u32 j = 0 ; j < go_to ; j++ )
+	u8* ptr = (u8*)pointer;
+	for (u32 j = 0; j < go_to; j += 1)
 	{
-		for ( u32 i = 0 ; i < 0x10 ; i++ )
-			printf("%02x ", *temp1++);
-		printf("  ");
-		for ( u32 i = 0 ; i < 0x10 ; i++ )
-			ascii(*temp2++);
-		printf("\n");
+		for (u32 i = 0; i < 0x10; i += 1)
+		{
+			std::cout << std::setfill('0') << std::setw(2);
+			std::cout << std::hex << ptr[i] << " ";
+		}
+		for (u32 i = 0; i < 0x10; i += 1)
+			ascii(ptr[i]);
+		std::cout << std::endl;
 	}
 }
 
-void printStringVector( vector<string> lines )
+void printStringVector(const std::vector<std::string>& lines)
 {
-	for(u32 ii = 0; ii < lines.size(); ii++)
-		cout << lines[ii] << endl;
+	for (u32 i = 0; i < lines.size(); i += 1)
+		std::cout << lines[i] << std::endl;
 }
 
-void printCharVector( vector<char> line )
+void printCharVector(const std::vector<char>& line)
 {
-	for(u32 ii = 0; ii < line.size(); ii++)
-		cout << line[ii];
-	cout << endl;
+	for (u32 i = 0; i < line.size(); i += 1)
+		std::cout << line[i];
+	std::cout << std::endl;
 }
 
-void stripCarriageReturns( string& StringToModify )
+void stripCarriageReturns(std::string& StringToModify)
 {
-	if(StringToModify.empty()) return;
+	if (StringToModify.empty())
+		return;
 
 	int startIndex = StringToModify.find_first_not_of("\r");
 	int endIndex = StringToModify.find_last_not_of("\r");
-	string tempString = StringToModify;
-	StringToModify.erase();
+	std::string tempString = StringToModify;
 
+	StringToModify.erase();
 	StringToModify = tempString.substr(startIndex, (endIndex - startIndex + 1));
 }
 
-u32 ReadFile(const char* filename, char* buffer) {
-	ifstream save(filename, ios::in);
-	if(!save)
+u32 ReadFile(const char* filename, char* buffer)
+{
+	std::ifstream save(filename);
+
+	if (!save)
 	{
-		cout << "File ";
-		cout << filename << "could not be opened" << endl;
+		std::cout << "File ";
+		std::cout << filename << "could not be opened" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	save.seekg(0, ifstream::end);
+
+	save.seekg(0, std::ifstream::end);
 	u32 saveSize = save.tellg();
 	save.seekg(0);
 
@@ -77,12 +85,13 @@ u32 ReadFile(const char* filename, char* buffer) {
 	return saveSize;
 }
 
-vector<char> readLine1(char * buffer, int len)
+std::vector<char> readLine1(const char* buffer, int len)
 {
-	vector<char> line;
-	for(char * spot = buffer; spot < buffer + len; spot++)
-		if( *spot != '\n' )
-			line.push_back(*spot);
+	std::vector<char> line;
+	const char* end = buffer + len;
+	for (; buffer < end; buffer += 1)
+		if (*buffer != '\n')
+			line.push_back(*buffer);
 		else
 			return line;
 	return line;
@@ -93,8 +102,8 @@ string readLine2(const char * buffer, int len)
 {
 	string line;
 	line.empty();
-	for(const char* spot = buffer; spot < buffer + len; spot++)
-		if( *spot != '\n' )
+	for (const char* spot = buffer; spot < buffer + len; spot++)
+		if (*spot != '\n')
 			line.append(*spot);
 		else
 			return line;

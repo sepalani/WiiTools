@@ -1,17 +1,9 @@
-#ifndef __FUNCTIONS_H
-#define __FUNCTIONS_H
+#pragma once
 
-#include <cstdlib>
+#include <string>
 #include <vector>
-#include <iostream>
-#include <string.h>
 
 #include "types.hh"
-#include "endian.hh"
-#include "common.hh"
-#include "dol.hh"
-
-using namespace std;
 
 // SigCompare defines
 #define CMP_MATCHING 0
@@ -23,10 +15,10 @@ using namespace std;
 
 typedef struct
 {
-	string code;
-	string unk1;
-	string funcName;
-	vector< pair<int, string> > refs;
+	std::string	code;
+	std::string unk1;
+	std::string	funcName;
+	std::vector< std::pair<int, std::string> > refs;
 } m_sig;
 
 typedef struct
@@ -36,21 +28,19 @@ typedef struct
 	u32   memory_address;
 } function_instance;
 
-vector<u32> GetU32Vector( string code );
-void* FindFunction(char* buffer, u32 length, vector<u32> findme);
-char* FindFunction( char* start , char* end , const u32* binary , u32 length );
+std::vector<u32> GetU32Vector(std::string code);
+void* FindFunction(char* buffer, u32 length, std::vector<u32> findme);
+char* FindFunction(char* start, char* end, const u32* binary, u32 length);
 char* FindFunction(char* buffer, u32 length, const u32* findme, u32 findme_length);
 char* CheckFunction(char* buffer, u32 length, const u32* findme, u32 findme_length);
-void FindSig( char* buffer, u32 length, string sig, bool dol );
-int CompareSigs( string sig1, string sig2 );
-void ShowSigCodeDiff(string sig1, string sig2, bool stop=false);
-void DumpSigInfo( string sig );
-string GetSigName( string sig );
-bool FindSigByName( string sig, string sigName );
-char* FindBinary( char* start , u32 buffer_len , char* binary , u32 length );
-char* FindBinary( char* start , u32 buffer_len , const u32* binary , u32 length );
-void CreateIDC( char* buffer, u32 length, string sig, bool dol );
-m_sig ParseMegaLine(string sig);
+void FindSig(char* buffer, u32 length, std::string sig, bool dol);
+int CompareSigs(std::string sig1, std::string sig2);
+void ShowSigCodeDiff(std::string sig1, std::string sig2, bool stop=false);
+void DumpSigInfo(std::string sig);
+std::string GetSigName(std::string sig);
+bool FindSigByName(std::string sig, std::string sigName);
+char* FindBinary(char* start, u32 buffer_len, char* binary, u32 length);
+char* FindBinary(char* start, u32 buffer_len, const u32* binary, u32 length);
+void CreateIDC(char* buffer, u32 length, std::string sig, bool dol);
+m_sig ParseMegaLine(std::string sig);
 function_instance FindMSig(char* buffer, u32 length, u32 offset, m_sig sig, bool isDol);
-
-#endif

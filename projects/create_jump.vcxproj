@@ -153,9 +153,7 @@
     <ClCompile Include="..\source\common.cpp" />
     <ClCompile Include="..\source\create_jump.cpp" />
     <ClCompile Include="..\source\dol.cpp" />
-    <ClCompile Include="..\source\endian.cpp" />
     <ClCompile Include="..\source\functions.cpp" />
-    <ClCompile Include="..\source\wii.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

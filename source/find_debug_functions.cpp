@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "dol.hh"
 #include "types.hh"
 #include "endian.hh"
 #include "common.hh"

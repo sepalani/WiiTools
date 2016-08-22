@@ -17,16 +17,10 @@
     <ClCompile Include="..\source\dol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\endian.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\source\mega_info_creator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\wii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

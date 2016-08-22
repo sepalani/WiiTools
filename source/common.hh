@@ -1,5 +1,4 @@
-#ifndef __COMMON_H
-#define __COMMON_H
+#pragma once
 
 //#define DEBUG 1
 //#define DEBUG_BINARY 1
@@ -8,32 +7,16 @@
 
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "types.hh"
 
-/* CRAP ADDED TO BE WEEDED OUT */
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <map>
-#include <cstdlib>
-#include <fstream>
-#include <string.h>
-/* END OF CRAP */
-
-using namespace std;
-
-void ascii( u8 character );
-void hexdump( char * pointer , u32 length );
-void printStringVector( vector<string> lines );
-void printCharVector( vector<char> line );
-void stripCarriageReturns( string& StringToModify );
+void ascii(u8 character);
+void hexdump(const void* pointer, u32 length);
+void printStringVector(const std::vector<std::string>& lines);
+void printCharVector(const std::vector<char>& line);
+void stripCarriageReturns(std::string& StringToModify);
 u32 ReadFile(const char* filename, char* buffer);
-vector<char> readLine1(char * buffer, int len);
+std::vector<char> readLine1(char* buffer, int len);
 #if 0
-string readLine2(char * buffer, int len);
-#endif
-
+std::string readLine2(char* buffer, int len);
 #endif

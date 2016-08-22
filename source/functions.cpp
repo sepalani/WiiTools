@@ -1,28 +1,34 @@
+#include <iostream>
+#include <sstream>
+
+#include "common.hh"
+#include "dol.hh"
+#include "endian.hh"
 #include "functions.hh"
 
-vector<u32> GetU32Vector( string code )
+std::vector<u32> GetU32Vector(std::string code)
 {
-	vector<u32> binary;
+	std::vector<u32> binary;
 	for(u32 ii = 0; ii < code.length(); ii+=8)
 	{
-		string sub = code.substr(ii, 8);
+		std::string sub = code.substr(ii, 8);
 #ifdef DEBUG_BINARY
-		cout << sub << endl;
+		std::cout << sub << std::endl;
 #endif
 		const char * codeptr = sub.c_str();
 		u32 dword = strtoul(codeptr, NULL, 16);
 #ifdef DEBUG_BINARY
-		cout << "0x" << hex << dword << endl;
+		std::cout << "0x" << std::hex << dword << std::endl;
 #endif
 		binary.push_back( dword );
 	}
 #ifdef DEBUG_BINARY
-	cout << endl;
+	std::cout << std::endl;
 #endif
 	return binary;
 }
 
-void* FindFunction(char* buffer, u32 length, vector<u32> findme)
+void* FindFunction(char* buffer, u32 length, std::vector<u32> findme)
 {
 	u32 findme_length = findme.size();
 	for (u32* location = (u32*)buffer; (u8*)location < (u8*)buffer + length - findme_length * 4; location++)
@@ -78,20 +84,20 @@ char* CheckFunction(char* buffer, u32 length, const u32* findme, u32 findme_leng
 	u32 i = 0;
 	for(u32* check = (u32*)buffer; check < (u32*)buffer + findme_length; check++, i++)
 	{
-		cout << hex << be32(*check)
-			<< "\t" << hex << findme[i];
+		std::cout << std::hex << be32(*check)
+			<< "\t" << std::hex << findme[i];
 		if ((findme[i] > 0x10) && (be32(*check) != findme[i]))
-			cout << " NOT MATCHING!!!";
-		cout << endl;
+			std::cout << " NOT MATCHING!!!";
+		std::cout << std::endl;
 	}
 	if (i == findme_length)
 		return (char*)buffer;
 	else
-		cout << "missed at insn " << i << endl;
+		std::cout << "missed at insn " << i << std::endl;
 	return NULL;
 }
 
-void FindSig( char* buffer, u32 length, string sig, bool dol )
+void FindSig( char* buffer, u32 length, std::string sig, bool dol )
 {
 	if ( sig.length() < 5 )
 		return;
@@ -99,32 +105,32 @@ void FindSig( char* buffer, u32 length, string sig, bool dol )
 	if ( sig == "---" )
 		return;
 
-	stringstream ss(sig);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
 	if ( FUNCTION_NAME_LIMIT < funcName.length() )
 		return;
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 #ifdef DEBUG
-	cout << "Size of refs: " << dec << refs.size() << endl;
-	cout << funcName << endl;
+	std::cout << "Size of refs: " << std::dec << refs.size() << std::endl;
+	std::cout << funcName << std::endl;
 #endif
-	vector<u32> binary = GetU32Vector( code );
+	std::vector<u32> binary = GetU32Vector( code );
 
 	void * func = NULL;
 	func = FindFunction( buffer , length , binary );
@@ -136,13 +142,13 @@ void FindSig( char* buffer, u32 length, string sig, bool dol )
 			offs = GetMemoryAddressDol(buffer, file_offs);
 		else
 			offs = file_offs + 0x80000000;
-		cout << funcName;
-		cout << " at ";
-		cout << "0x" << hex << offs;
-		cout << endl;
+		std::cout << funcName;
+		std::cout << " at ";
+		std::cout << "0x" << std::hex << offs;
+		std::cout << std::endl;
 		for(u32 ii=0; ii < refs.size(); ii++)
 		{
-			cout << dec << refs[ii].first << "\t"
+			std::cout << std::dec << refs[ii].first << "\t"
 				<< refs[ii].second;
 
 			char* ref_offs = (char*)func + refs[ii].first;
@@ -154,10 +160,10 @@ void FindSig( char* buffer, u32 length, string sig, bool dol )
 			u32 ref_address = offs + refs[ii].first;
 			ref_address += b_amt;
 			if ( ( insn & 0x48000000 ) == 0x48000000 )
-				cout << "\t" << hex << ref_address;
+				std::cout << "\t" << std::hex << ref_address;
 
 			//u32 val = GetFileOffsetDol(buffer, address);
-			cout << endl;
+			std::cout << std::endl;
 		}
 		/* show xrefs */
 	}
@@ -166,7 +172,7 @@ void FindSig( char* buffer, u32 length, string sig, bool dol )
 #endif
 }
 
-int CompareSigs( string sig1, string sig2 )
+int CompareSigs( std::string sig1, std::string sig2 )
 {
 	//FIXME
 	if ( sig1 == "---" )
@@ -175,43 +181,43 @@ int CompareSigs( string sig1, string sig2 )
 		return CMP_BAD_SIG;
 
 	// SIG1
-	stringstream ss(sig1);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig1);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 	
 	// SIG2
-	stringstream ss2(sig2);
-	string code2 , unk12 , funcName2;
-	getline( ss2 , code2 , space );
-	getline( ss2 , unk12 , space );
-	getline( ss2 , funcName2 , space );
+	std::stringstream ss2(sig2);
+	std::string code2 , unk12 , funcName2;
+	std::getline( ss2 , code2 , space );
+	std::getline( ss2 , unk12 , space );
+	std::getline( ss2 , funcName2 , space );
 	stripCarriageReturns( funcName2 );
-	vector< pair<int, string> > refs2;
+	std::vector< std::pair<int, std::string> > refs2;
 	while( !ss2.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss2 , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss2 , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss2 , tempString , space );
+		std::getline( ss2 , tempString , space );
 		stripCarriageReturns( tempString );
-		refs2.push_back( pair<int, string>(num, tempString) );
+		refs2.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 
@@ -231,7 +237,7 @@ int CompareSigs( string sig1, string sig2 )
 	return CMP_MATCHING;
 }
 
-void ShowSigCodeDiff(string sig1, string sig2, bool stop)
+void ShowSigCodeDiff(std::string sig1, std::string sig2, bool stop)
 {
 	//FIXME
 	if ( sig1 == "---" )
@@ -240,63 +246,63 @@ void ShowSigCodeDiff(string sig1, string sig2, bool stop)
 		return;
 
 	// SIG1
-	stringstream ss(sig1);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig1);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 	
 	// SIG2
-	stringstream ss2(sig2);
-	string code2 , unk12 , funcName2;
-	getline( ss2 , code2 , space );
-	getline( ss2 , unk12 , space );
-	getline( ss2 , funcName2 , space );
+	std::stringstream ss2(sig2);
+	std::string code2 , unk12 , funcName2;
+	std::getline( ss2 , code2 , space );
+	std::getline( ss2 , unk12 , space );
+	std::getline( ss2 , funcName2 , space );
 	stripCarriageReturns( funcName2 );
-	vector< pair<int, string> > refs2;
+	std::vector< std::pair<int, std::string> > refs2;
 	while( !ss2.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss2 , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss2 , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss2 , tempString , space );
+		std::getline( ss2 , tempString , space );
 		stripCarriageReturns( tempString );
-		refs2.push_back( pair<int, string>(num, tempString) );
+		refs2.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 
-	vector<u32> vec1 = GetU32Vector( code );
-	vector<u32> vec2 = GetU32Vector( code2 );
+	std::vector<u32> vec1 = GetU32Vector( code );
+	std::vector<u32> vec2 = GetU32Vector( code2 );
 
 #if 0
-	cout << "\t\tin:" << endl;
+	std::cout << "\t\tin:" << std::endl;
 #endif
 	for(u32 ii = 0; ii < vec1.size(); ii++)
 	{
 #if 0
-		cout << "\t\t\tchecked" << hex << vec1[ii] <<
-			"\t" << vec2[ii] << endl;
+		std::cout << "\t\t\tchecked" << std::hex << vec1[ii] <<
+			"\t" << vec2[ii] << std::endl;
 #endif
 		if(vec1[ii] != vec2[ii])
 		{
-			cout << "\t" << hex << ii <<
+			std::cout << "\t" << std::hex << ii <<
 				" doesn't match " << 
-				vec1[ii] << "\t" << vec2[ii] << endl;
+				vec1[ii] << "\t" << vec2[ii] << std::endl;
 			if(stop)
 				return;
 		}
@@ -304,95 +310,95 @@ void ShowSigCodeDiff(string sig1, string sig2, bool stop)
 	return;
 }
 
-void DumpSigInfo( string sig )
+void DumpSigInfo( std::string sig )
 {
 	//FIXME
 	if ( sig == "---" )
 		return;
 
-	stringstream ss(sig);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
 	if ( FUNCTION_NAME_LIMIT < funcName.length() )
 		return;
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 #ifdef DEBUG
-	cout << "Size of refs: " << dec << refs.size() << endl;
+	std::cout << "Size of refs: " << std::dec << refs.size() << std::endl;
 #endif
-	cout << funcName << endl;
+	std::cout << funcName << std::endl;
 	for(u32 ii=0; ii < refs.size(); ii++)
 	{
-		cout << "\t" << dec << refs[ii].first << "\t"
-			<< refs[ii].second << endl;
+		std::cout << "\t" << std::dec << refs[ii].first << "\t"
+			<< refs[ii].second << std::endl;
 	}
 }
 
-string GetSigName( string sig )
+std::string GetSigName( std::string sig )
 {
 	if ( sig == "---" )
 		return "---";
 
-	stringstream ss(sig);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
 
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 	return funcName;
 }
 
-bool FindSigByName( string sig, string sigName )
+bool FindSigByName( std::string sig, std::string sigName )
 {
 	if ( sig == "---" )
 		return false;
 
-	stringstream ss(sig);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
 
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 	if(sigName == funcName)
@@ -424,7 +430,7 @@ char * FindBinary( char * start , u32 buffer_len , const u32 * binary , u32 leng
 	return NULL;
 }
 
-void CreateIDC( char* buffer, u32 length, string sig, bool dol )
+void CreateIDC( char* buffer, u32 length, std::string sig, bool dol )
 {
 	if ( sig.length() < 5 )
 		return;
@@ -432,32 +438,32 @@ void CreateIDC( char* buffer, u32 length, string sig, bool dol )
 	if ( sig == "---" )
 		return;
 
-	stringstream ss(sig);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
 	if ( FUNCTION_NAME_LIMIT < funcName.length() )
 		return;
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 #ifdef DEBUG
-	cout << "Size of refs: " << dec << refs.size() << endl;
-	cout << funcName << endl;
+	std::cout << "Size of refs: " << std::dec << refs.size() << std::endl;
+	std::cout << funcName << std::endl;
 #endif
-	vector<u32> binary = GetU32Vector( code );
+	std::vector<u32> binary = GetU32Vector( code );
 
 	void * func = NULL;
 	func = FindFunction( buffer , length , binary );
@@ -469,13 +475,13 @@ void CreateIDC( char* buffer, u32 length, string sig, bool dol )
 			offs = GetMemoryAddressDol(buffer, file_offs);
 		else
 			offs = file_offs + 0x80000000;
-		cout << "MakeFunction(0x" << hex << offs <<
-			", BADADDR); MakeName(0x" << hex << offs <<
-			", \"" << funcName << "\");" << endl;
+		std::cout << "MakeFunction(0x" << std::hex << offs <<
+			", BADADDR); MakeName(0x" << std::hex << offs <<
+			", \"" << funcName << "\");" << std::endl;
 		for(u32 ii=0; ii < refs.size(); ii++)
 		{
 			/*
-			cout << dec << refs[ii].first << "\t"
+			std::cout << std::dec << refs[ii].first << "\t"
 				<< refs[ii].second;
 			*/
 
@@ -489,15 +495,15 @@ void CreateIDC( char* buffer, u32 length, string sig, bool dol )
 			ref_address += b_amt;
 			if ( ( insn & 0x48000000 ) == 0x48000000 )
 			{
-				//cout << "\t" << hex << ref_address;
-				cout << "MakeFunction(0x" << hex <<
+				//std::cout << "\t" << std::hex << ref_address;
+				std::cout << "MakeFunction(0x" << std::hex <<
 					ref_address << ", BADADDR); MakeName(0x" <<
-					hex << ref_address << ", \"" <<
-					refs[ii].second << "\");" << endl;
+					std::hex << ref_address << ", \"" <<
+					refs[ii].second << "\");" << std::endl;
 			}
 
 			//u32 val = GetFileOffsetDol(buffer, address);
-			//cout << endl;
+			//std::cout << std::endl;
 		}
 		/* show xrefs */
 	}
@@ -506,13 +512,13 @@ void CreateIDC( char* buffer, u32 length, string sig, bool dol )
 #endif
 }
 
-m_sig ParseMegaLine(string sig)
+m_sig ParseMegaLine(std::string sig)
 {
 	m_sig msig;
 	msig.code = "";
 	msig.unk1 = "0000:";
 	msig.funcName = "";
-	vector< pair<int, string> > refs;
+	std::vector< std::pair<int, std::string> > refs;
 	msig.refs = refs;
 	if ( sig.length() < 5 )
 		return msig;
@@ -520,12 +526,12 @@ m_sig ParseMegaLine(string sig)
 	if ( sig == "---" )
 		return msig;
 
-	stringstream ss(sig);
-	string code , unk1 , funcName;
+	std::stringstream ss(sig);
+	std::string code , unk1 , funcName;
 	char space = ' ';
-	getline( ss , code , space );
-	getline( ss , unk1 , space );
-	getline( ss , funcName , space );
+	std::getline( ss , code , space );
+	std::getline( ss , unk1 , space );
+	std::getline( ss , funcName , space );
 	stripCarriageReturns( funcName );
 	msig.code = code;
 	msig.unk1 = unk1;
@@ -534,12 +540,12 @@ m_sig ParseMegaLine(string sig)
 	while( !ss.eof() )
 	{
 		//FIXME
-		string tempNum, tempString;
-		getline( ss , tempNum , space );
+		std::string tempNum, tempString;
+		std::getline( ss , tempNum , space );
 		u32 num = strtoul(tempNum.c_str() + 1, NULL, 16);
-		getline( ss , tempString , space );
+		std::getline( ss , tempString , space );
 		stripCarriageReturns( tempString );
-		refs.push_back( pair<int, string>(num, tempString) );
+		refs.push_back( std::pair<int, std::string>(num, tempString) );
 		//refs.push_back( tempString );
 	}
 	msig.refs = refs;
@@ -549,22 +555,22 @@ m_sig ParseMegaLine(string sig)
 function_instance FindMSig(char* buffer, u32 length, u32 offset, m_sig sig, bool dol)
 {
 #if 0
-	cout << "buffer: " << hex << (u32)buffer << " [DEBUG]" << endl
-		<< "length: " << hex << length << " [DEBUG]" << endl
-		<< "offset: " << hex << offset << " [DEBUG]" << endl
-		<< "code: " << sig.code << " [DEBUG]" << endl;
+	std::cout << "buffer: " << std::hex << (u32)buffer << " [DEBUG]" << std::endl
+		<< "length: " << std::hex << length << " [DEBUG]" << std::endl
+		<< "offset: " << std::hex << offset << " [DEBUG]" << std::endl
+		<< "code: " << sig.code << " [DEBUG]" << std::endl;
 #endif
 	function_instance instance;
 	instance.sig = sig;
 	instance.buffer_location = NULL;
 	instance.memory_address = 0;
-	vector<u32> binary = GetU32Vector( sig.code );
+	std::vector<u32> binary = GetU32Vector( sig.code );
 
 	void * func = NULL;
 	func = FindFunction( buffer , length , binary );
 #if 0
-	cout << sig.funcName << ": " << hex << (u32)func
-		<< " [DEBUG]" << endl;
+	std::cout << sig.funcName << ": " << std::hex << (u32)func
+		<< " [DEBUG]" << std::endl;
 #endif
 	if ( func )
 	{

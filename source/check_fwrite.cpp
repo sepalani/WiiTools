@@ -19,6 +19,7 @@
 #include "dol.hh"
 #include "functions.hh"
 #include "wii.hh"
+#include "common.hh"
 
 using namespace std;
 
