@@ -42,7 +42,7 @@ Special considerations:
 #include <vector>
 #include <list>
 #include <map>
-#define MIN_SIG_LENGTH 30
+#define MIN_SIG_LENGTH 4
 
 //#define SINGLE_FUNC
 
